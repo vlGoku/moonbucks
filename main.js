@@ -71,16 +71,26 @@ const Order = () => {
         "-"
       );
 
-      // add EventListner to dec_button > call function removeItem()
-      // when clicked and give an argument to the function
+      dec_button.addEventListener("click", (e) => {
+        removeItem(e);
+      });
     });
   };
 
-  const removeItem = () => {
-    //add argument
-    //dec quantity in cart
-    //check if quantity == 0 > remove item from cart
-    updateCart();
+  const removeItem = (e) => {
+    let targetElement = e.target;
+    targetElement = targetElement.parentElement.firstChild.innerHTML;
+    cart.forEach((item) => {
+      if (item.drink.getName() === targetElement) {
+        item.quantity--;
+        if (item.quantity == 0) {
+          e.target.parentElement.remove();
+          cart.splice(cart.indexOf(item), 1);
+        } else {
+          updateCart();
+        }
+      }
+    });
   };
 
   return {
@@ -115,7 +125,7 @@ function createTag(parent_node, tag_node, id_name, class_name, content) {
 }
 
 //create multiple tags
-function createMultiTags(parent_node, tag_node, num, list, menu) {
+function createMultiTags(parent_node, tag_node, num, list, linklist, menu) {
   for (let i = 0; i < num; i++) {
     if (menu) {
       createTag(
@@ -123,7 +133,11 @@ function createMultiTags(parent_node, tag_node, num, list, menu) {
         tag_node,
         null,
         list[i],
-        '<a href="#' + list[i].replace(/ /g, "-") + '">' + list[i] + "</a>"
+        '<a href="' +
+          linklist[i] +
+          '">' +
+          list[i] +
+          "</a>" /* list[i].replace(/ /g, "-") */
       );
     } else {
       createTag(
@@ -146,7 +160,15 @@ function createHeader() {
   const menu = createTag(nav_header, "ul", null, "menu_header");
 
   let menu_list = ["Home", "Our Team", "Contact"];
-  createMultiTags(menu, "li", menu_list.length, menu_list, true);
+  let link_menu_list = ["#home", "#our_team", "#contact"];
+  createMultiTags(
+    menu,
+    "li",
+    menu_list.length,
+    menu_list,
+    link_menu_list,
+    true
+  );
 }
 
 //create card
@@ -208,13 +230,24 @@ function createFooter() {
   const footer = createTag(null, "footer");
   const logo = createTag(footer, "div", null, "logo_footer");
   const socials_sections = createTag(footer, "div", "social_section");
+  const menu_social = createTag(footer, "ul", null, "menu_social");
 
-  let social_list = ["Facebook", "Snapchat", "Instagram"];
+  let social_list = [
+    '<i class="fa-brands fa-facebook"></i>',
+    '<i class="fa-brands fa-snapchat"></i>',
+    '<i class="fa-brands fa-instagram"></i>',
+  ];
+  let link_social_list = [
+    "www.facebook.com",
+    "www.snapchat.com",
+    "www.instagram.com",
+  ];
   createMultiTags(
-    socials_sections,
+    menu_social,
     "li",
     social_list.length,
     social_list,
+    link_social_list,
     true
   );
   // add the social links (facebook, instagram, twitter)
