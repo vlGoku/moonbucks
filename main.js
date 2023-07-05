@@ -237,6 +237,18 @@ function createMenu(menulist, order) {
     "menu_coffee_special",
     "menu_sub_section"
   );
+  const menu_tea = createTag(
+    menu_section,
+    "div",
+    "menu_tea",
+    "menu_sub_section"
+  );
+  const menu_special = createTag(
+    menu_section,
+    "div",
+    "menu_special",
+    "menu_sub_section"
+  );
 
   createTag(menu_coffee, "h2", null, "coffee_heading", "Classics");
   createTag(
@@ -246,12 +258,18 @@ function createMenu(menulist, order) {
     "coffee_s_heading",
     "Coffee Specials"
   );
+  createTag(menu_tea, "h2", null, "tea_heading", "Tea");
+  createTag(menu_special, "h2", null, "special_heading", "Specials");
 
   menulist.forEach((drink) => {
     if (drink.getType() === "coffee") {
       createCard(menu_coffee, drink, order);
     } else if (drink.getType() === "coffee_special") {
       createCard(menu_coffee_special, drink, order);
+    } else if (drink.getType() === "tea") {
+      createCard(menu_tea, drink, order);
+    } else if (drink.getType() === "special") {
+      createCard(menu_special, drink, order);
     }
   });
 }
@@ -319,8 +337,20 @@ function init() {
   const latte = new Drink("Latte", 3.2, "coffee");
   const bullet = new Drink("Bullet Coffee", 3.2, "coffee_special");
   const mocca = new Drink("Mocca Froffee", 3.2, "coffee_special");
+  const frappuccino = new Drink("Frappuccino", 4.5, "coffee_special");
+  const green_tea = new Drink("Green Tea", 2.3, "tea");
+  const milkshake = new Drink("Milkshake", 2.9, "special");
 
-  const menulist = [espresso, cappuccino, latte, bullet, mocca];
+  const menulist = [
+    espresso,
+    cappuccino,
+    latte,
+    bullet,
+    mocca,
+    green_tea,
+    frappuccino,
+    milkshake,
+  ];
   const order = Order();
 
   createHeader();
