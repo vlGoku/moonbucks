@@ -23,7 +23,7 @@ class Drink {
 
 //Order Factory Function
 const Order = () => {
-  const cart = [];
+  let cart = [];
 
   const addToCart = (drink) => {
     let quantity = 1;
@@ -70,11 +70,22 @@ const Order = () => {
         "decrease_num",
         "-"
       );
+      const add_item_button = createTag(
+        itemCard,
+        "button",
+        null,
+        "increase_num",
+        "+"
+      );
 
       dec_button.addEventListener("click", (e) => {
         removeItem(e);
       });
+      add_item_button.addEventListener("click", (e) => {
+        addItem(e);
+      });
     });
+    getSum();
   };
 
   const removeItem = (e) => {
@@ -86,6 +97,7 @@ const Order = () => {
         if (item.quantity == 0) {
           e.target.parentElement.remove();
           cart.splice(cart.indexOf(item), 1);
+          getSum();
         } else {
           updateCart();
         }
@@ -93,8 +105,35 @@ const Order = () => {
     });
   };
 
+  const addItem = (e) => {
+    let targetElement = e.target;
+    targetElement = targetElement.parentElement.firstChild.innerHTML;
+    cart.forEach((item) => {
+      if (item.drink.getName() === targetElement) {
+        item.quantity++;
+        updateCart();
+      }
+    });
+  };
+
+  //get sum
+  function getSum() {
+    let summeDrinks = 0;
+    cart.forEach((cart_item) => {
+      summeDrinks += cart_item.drink.getPrice() * cart_item.quantity;
+    });
+    const summe = document.getElementById("summe");
+    summe.innerHTML = "Total: " + summeDrinks.toFixed(2) + " €";
+  }
+
+  const removeAll = () => {
+    cart = [];
+    updateCart();
+  };
+
   return {
     addToCart,
+    removeAll,
   };
 };
 
@@ -184,8 +223,7 @@ function createCard(parent_section, drink, order) {
 }
 
 //create menu
-function createMenu(menulist) {
-  const order = Order();
+function createMenu(menulist, order) {
   const menu_section = createTag(null, "section", "menu_section");
   const menu_coffee = createTag(
     menu_section,
@@ -219,10 +257,31 @@ function createMenu(menulist) {
 }
 
 //create order
-function createOrder() {
+function createOrder(order) {
   const order_section = createTag(null, "section", "order_section", "order");
   createTag(order_section, "h2", null, "order_heading", "Your Order");
   createTag(order_section, "div", "cart_section");
+  createTag(order_section, "div", "summe", "summe");
+  const delete_all_items = createTag(
+    order_section,
+    "button",
+    "delete_all",
+    "delete_all",
+    "Delete Cart"
+  );
+  const checkout = createTag(
+    order_section,
+    "button",
+    null,
+    "checkout",
+    "Checkout"
+  );
+  checkout.addEventListener("click", () => {
+    window.open("order.html");
+  });
+  delete_all_items.addEventListener("click", () => {
+    order.removeAll();
+  });
 }
 
 //create footer
@@ -262,10 +321,11 @@ function init() {
   const mocca = new Drink("Mocca Froffee", 3.2, "coffee_special");
 
   const menulist = [espresso, cappuccino, latte, bullet, mocca];
+  const order = Order();
 
   createHeader();
-  createMenu(menulist);
-  createOrder();
+  createMenu(menulist, order);
+  createOrder(order);
   createFooter();
 }
 
